@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FitTrack Pro | Your Fitness Companion</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="blob"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="container">
+    <div class="glass-card">
+      <!-- App Logo/Title -->
+      <div class="app-header">
+        <i class="fas fa-dumbbell logo-icon"></i>
+        <h1>FitTrack<span>Pro</span></h1>
+        <p>Your personal fitness companion</p>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="flash flash-{{ category }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form {% if get_flashed_messages(category_filter=['success']) %}{% else %}hidden{% endif %}" action="{{ url_for('login') }}" method="POST">
+        <div class="input-group floating">
+          <input type="text" id="login-email" name="email" placeholder=" " required />
+          <label for="login-email">Email</label>
+          <i class="fas fa-user input-icon"></i>
+        </div>
+
+        <div class="input-group floating">
+          <input type="password" id="login-password" name="password" placeholder=" " required />
+          <label for="login-password">Password</label>
+          <i class="fas fa-lock input-icon"></i>
+          <button type="button" class="show-password"><i class="fas fa-eye"></i></button>
+        </div>
+
+        <div class="form-footer">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember" value="1" />
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>Login</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div class="signup-link">
+          <p>Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
+        </div>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signup-form" class="auth-form {% if get_flashed_messages(category_filter=['success']) %}hidden{% endif %}" action="{{ url_for('signup') }}" method="POST">
+        <div class="input-group floating">
+          <input type="text" id="signup-name" name="name" placeholder=" " required />
+          <label for="signup-name">Full Name</label>
+          <i class="fas fa-user input-icon"></i>
+        </div>
+
+        <div class="input-group floating">
+          <input type="email" id="signup-email" name="email" placeholder=" " required />
+          <label for="signup-email">Email</label>
+          <i class="fas fa-envelope input-icon"></i>
+        </div>
+
+        <div class="input-group floating">
+          <input type="tel" id="signup-phone" name="phone" placeholder=" " required />
+          <label for="signup-phone">Phone Number</label>
+          <i class="fas fa-phone input-icon"></i>
+        </div>
+
+        <div class="input-group floating">
+          <input type="password" id="signup-password" name="password" placeholder=" " required />
+          <label for="signup-password">Password</label>
+          <i class="fas fa-lock input-icon"></i>
+        </div>
+
+        <div class="input-group floating">
+          <input type="password" id="signup-confirm-password" name="confirm_password" placeholder=" " required />
+          <label for="signup-confirm-password">Confirm Password</label>
+          <i class="fas fa-lock input-icon"></i>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="agree-terms" name="agree_terms" required />
+          <label for="agree-terms">I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span>Create Account</span>
+          <i class="fas fa-user-plus"></i>
+        </button>
+
+        <div class="login-link">
+          <p>Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="app-promo">
+      <div class="promo-content">
+        <h2>Transform Your Fitness Journey</h2>
+        <p>Track workouts, monitor progress, and achieve your goals with our personalized fitness platform.</p>
+        <div class="features">
+          <div class="feature"><i class="fas fa-chart-line"></i> Progress Analytics</div>
+          <div class="feature"><i class="fas fa-heartbeat"></i> Health Monitoring</div>
+          <div class="feature"><i class="fas fa-calendar-alt"></i> Workout Plans</div>
+          <div class="feature"><i class="fas fa-trophy"></i> Achievements</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+
+    document.getElementById('switch-to-signup')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+    });
+
+    document.getElementById('switch-to-login')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+
+    const showPasswordButtons = document.querySelectorAll('.show-password');
+    showPasswordButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const input = button.previousElementSibling;
+        const icon = button.querySelector('i');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+      });
+    });
+
+    // Float labels
+    const floatInputs = document.querySelectorAll('.floating input');
+    floatInputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.classList.add('focused');
+      });
+      input.addEventListener('blur', () => {
+        if (!input.value) {
+          input.parentElement.classList.remove('focused');
+        }
+      });
+      if (input.value) {
+        input.parentElement.classList.add('focused');
+      }
+    });
+  </script>
+</body>
+</html>
